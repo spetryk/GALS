@@ -1,0 +1,40 @@
+
+DATA:
+  DATASET: "waterbirds"
+  BATCH_SIZE: 96
+  NUM_CLASSES: 2
+
+  # Bias level, between [0, 1.0]. Make sure this is consistent with the actual dataset being used.
+  CONFOUNDING_FACTOR: 1.0
+
+  # Directory under ./data holding dataset
+  WATERBIRDS_DIR: "waterbird_1.0_forest2water2"
+
+  SEPARATE_CLASSES: True
+  USE_CLASS_WEIGHTS: True
+
+EXP:
+  APPROACH: "generic"
+
+  MODEL: "resnet50"
+  PRETRAINED: True
+
+  LOSSES:
+    CLASSIFICATION:
+      WEIGHT: 1
+
+  NUM_EPOCHS: 200
+  OPTIMIZER: "SGD"
+  WEIGHT_DECAY: 1e-5
+  MOMENTUM: 0.9
+
+  SCHEDULER: "NONE"
+
+  # Backbone of model
+  BASE:
+    LR: 0.01
+
+  # Classifier portion of model
+  CLASSIFIER:
+    LR: 0.001
+

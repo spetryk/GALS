@@ -1,0 +1,45 @@
+
+
+DATA:
+  DATASET: "waterbirds"
+  ROOT: "./data"
+
+  BATCH_SIZE: 128
+  NUM_WORKERS: 4
+
+  CONFOUNDING_FACTOR: 0.95
+  WATERBIRDS_DIR: "waterbird_1.0_forest2water2"
+  REMOVE_BACKGROUND: False
+  CROP_BIRD: False
+  DRAW_SQUARE: False
+  ATTENTION_DIR: "NONE" # Since attention will be created
+  SIZE: 224
+
+APPROACH: "clip"
+#SAVE_FOLDER: "clip_rn50_attention_gradcam"
+SAVE_FOLDER: "clip_rn50_attention_gradcam_per_class_background_2"
+#SAVE_FOLDER: "clip_vit_attention"
+
+#MODEL_TYPE: "ViT-B/32"
+#ATTENTION_TYPE: "transformer"
+
+MODEL_TYPE: "RN50"
+ATTENTION_TYPE: "gradcam"
+TARGET_LAYER: "layer4.2.relu"
+
+# Prompt settings:
+# - If USE_PROMPTS_PER_CLASS is True, attention for each image
+#   depends on its class label. In this case, PROMPTS_PER_CLASS
+#   should contain a list of length # classes, with entry i holding
+#   the prompts for class i.
+# - Otherwise, if USE_PROMPTS_PER_CLASS is False, then every image
+#   gets the same prompts, which are specified in PROMPTS.
+
+USE_PROMPTS_PER_CLASS: True
+PROMPTS_PER_CLASS:
+  - ["an image of the forest", "a photo of the forest", "an image of trees", "a photo of trees"]
+  - ["an image of the water", "a photo of the water", "an image of a lake", "a photo of a lake "]
+
+
+# General prompts, used if USE_PROMPTS_PER_CLASS is False
+PROMPTS: ["an image of the background", "a photo of the background"]

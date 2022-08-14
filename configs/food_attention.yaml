@@ -1,0 +1,22 @@
+DATA:
+  ROOT: "./data"
+  DATASET: "food_subset"
+  ATTENTION_DIR: "NONE" # Since attention will be created
+  SIZE: 224
+  CLASSES: ['prime_rib', 'pork_chop', 'steak', 'baby_back_ribs', 'filet_mignon']
+  SPLIT: 'split'
+
+APPROACH: "clip"
+
+SAVE_FOLDER: "clip_rn50_attention_gradcam"
+MODEL_TYPE: "RN50"
+ATTENTION_TYPE: "gradcam"
+TARGET_LAYER: "layer4.2.relu"
+
+# SAVE_FOLDER: "clip_vit_attention"
+# MODEL_TYPE: "ViT-B/32"
+# ATTENTION_TYPE: "transformer"
+
+PROMPTS: ["an image of meat", "a photo of meat"]
+
+

@@ -1,0 +1,114 @@
+SEED: 0
+
+DATA:
+  BATCH_SIZE: 128
+  NUM_WORKERS: 4
+
+  # Size of training images (square)
+  SIZE: 224
+
+  # Mean and std deviation to use, found in datasets/__init__.py
+  NORMALIZATION: 'imagenet'
+
+  # Folder under DATA.ROOT where attention is held
+  ATTENTION_DIR: "NONE"
+
+  # Used for binary classification only, i.e. DATA.NUM_CLASSES = 2.
+  # For coco_gender dataset, must be True.
+  # For UpWeight models, must be True.
+  # If True, classifier has 1 output, with Sigmoid activation, and BCE loss.
+  # If False, classifier has 2 outputs, with Softmax activation, and cross entropy loss.
+  SEPARATE_CLASSES: False
+
+  REMOVE_BACKGROUND: False
+
+  # Folder where datasets are held
+  ROOT: "./data"
+
+  # Weight the loss of training samples to balance loss over class distribution
+  # (landbird vs. waterbird)
+  USE_CLASS_WEIGHTS: False
+
+  # For Waterbirds: weight the loss of training samples to balance loss over group distribution
+  # (landbird on land, landbird on water, waterbird on land, waterbird on water).
+  # Note that this requires group labels during training time (an assumption that GALS
+  # does not use).
+  USE_GROUP_WEIGHTS: False
+
+
+EXP:
+  # Amount of training trials to run. If > 1, will print out mean & std over evaluation
+  # metrics after all have finished.
+  NUM_TRIALS: 1
+
+  LOSSES:
+    # Settings for the losses that are not CLASSIFICATION:
+    # COMPUTE:
+    #   True to include it in the loss.
+    # LOG:
+    #   Used to compute & log loss, but without including it
+    #   in the actual training loss backward pass. It is also not added to the
+    #   "total_loss" metrics. This is useful to see the effect of adding attention
+    #   supervision, disentangled from normal model training (where attention might
+    #   naturally converge to something good).
+    #   Throws error if both LOG and COMPUTE are True.
+    # WEIGHT:
+    #   scalar value to weight loss by
+    # CRITERION:
+    #   "L1" or "L2", for how the particular loss is added to the total loss
+    # GT:
+    #   Source of ground-truth attention. "zeros", "segmentation", "bbox", or "attention"
+    # MODE:
+    #  For attention-map loss. "match" for the goal of the predicted attention exactly
+    #  matching the GT, or "suppress_outside" for the goal of penalizing predicted attention
+    #  that falls outside of GT attention regions.
+    # COMBINE_ATT_MODE:
+    #   When there are multiple target attention maps per image (e.g., attention from 2 CLIP prompts)
+    #   defines how to combine into one target attention for attention supervision.
+    #   "average_nonzero" averages together all maps that are not all 0s
+    #   "max" takes maximum attention for each pixel over all candidates.
+    CLASSIFICATION:
+      WEIGHT: 1
+    GRADIENT_OUTSIDE:
+      COMPUTE: False
+      LOG: False
+      WEIGHT: 0.01
+      CRITERION: "L1"
+      GT: "segmentation"
+      COMBINE_ATT_MODE: "average_nonzero"
+    GRADIENT_INSIDE:
+      COMPUTE: False
+      LOG: False
+      WEIGHT: 1
+      CRITERION: "L1"
+      GT: "segmentation"
+      COMBINE_ATT_MODE: "average_nonzero"
+    GRADCAM:
+      COMPUTE: False
+      LOG: False
+      WEIGHT: 1
+      CRITERION: "L1"
+      GT: "segmentation"
+      MODE: "match" # match, suppress_outside
+      COMBINE_ATT_MODE: "average_nonzero"
+
+LOGGING:
+  # Save model every save_every # of epochs. if 0, don't save model on a regular basis
+  SAVE_EVERY: 0
+
+  # Save best model (updates throughout training)
+  SAVE_BEST: True
+
+  # Save last model (updates throughout training)
+  SAVE_LAST: False
+
+  # Logging attention.
+  # Step is # epochs b/w logging. Would also log attention before training and at end.
+  LOG_ATTENTION: False
+  LOG_ATTENTION_STEP: 10
+
+  # Save stats over multiple runs to a CSV file.
+  # Gathering stats over multiple trials can also be done by setting EXP.NUM_TRIALS.
+  SAVE_STATS_PATH: "NONE"
+
+

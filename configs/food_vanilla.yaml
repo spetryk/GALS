@@ -1,0 +1,42 @@
+DATA:
+  DATASET: "food_subset"
+  NUM_CLASSES: 5
+  SEPARATE_CLASSES: False
+
+  BATCH_SIZE: 96
+
+  USE_CLASS_WEIGHTS: False
+  USE_GROUP_WEIGHTS: False
+  CLASSES: ['prime_rib', 'pork_chop', 'steak', 'baby_back_ribs', 'filet_mignon']
+  SUBDIR: 'food-101'
+  SPLIT: 'split'
+
+EXP:
+  APPROACH: "generic"
+  NUM_TRIALS: 1
+
+  MODEL: "resnet50"
+  PRETRAINED: True
+
+  LOSSES:
+    # LOG setting is used to compute & log loss, but without including it
+    # in the actual training loss backward pass. It is also not added to the
+    # "total_loss" metrics.
+    # Throws error if both LOG and COMPUTE are True.
+
+    CLASSIFICATION:
+      WEIGHT: 1
+
+  NUM_EPOCHS: 150
+  OPTIMIZER: "SGD"
+  WEIGHT_DECAY: 1e-5
+  MOMENTUM: 0.9
+
+  SCHEDULER: "NONE"
+
+  BASE:
+    LR: 0.01
+
+  CLASSIFIER:
+    LR: 0.001
+

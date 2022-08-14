@@ -1,0 +1,32 @@
+DATA:
+  DATASET: "coco_gender"
+  ROOT: "./data"
+  SIZE: 224
+  REMOVE_BACKGROUND: False
+
+  MIN_NEEDED: 3
+  USE_CLASS_WEIGHTS: False
+  ONLY_UPWEIGHT_WOMAN: False
+  BINARY_TRAIN: False
+  BINARY_EVAL: False
+  LABEL_EVAL_LIKE_TRAIN: False
+  NO_PENALTY_PERSON_PRED_EVAL: False
+
+  ATTENTION_DIR: "NONE" # Since attention will be created
+
+APPROACH: "clip"
+
+SAVE_FOLDER: "clip_rn50_attention_gradcam"
+MODEL_TYPE: "RN50"
+ATTENTION_TYPE: "gradcam"
+TARGET_LAYER: "layer4.2.relu"
+
+#SAVE_FOLDER: "clip_vit_attention"
+#MODEL_TYPE: "ViT-B/32"
+#ATTENTION_TYPE: "transformer"
+
+
+
+PROMPTS: ["an image of a person", "a photo of a person"]
+
+

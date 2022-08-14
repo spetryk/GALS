@@ -1,0 +1,67 @@
+
+
+DATA:
+  DATASET: "coco_gender"
+  NUM_CLASSES: 3
+
+  BATCH_SIZE: 96
+
+  ATTENTION_DIR: "clip_rn50_attention_gradcam"
+
+  # Minimum number of captions with man/woman/person words to qualify as that class
+  MIN_NEEDED: 3
+
+  USE_CLASS_WEIGHTS: False
+
+  # If using class weights, weight for woman class is num_man/num_woman.
+  # Other classes have weight 1.
+  ONLY_UPWEIGHT_WOMAN: False
+
+  # Binary: Only use man & woman classes (no person).
+  # Set separately for train & eval (eval is both val & test)
+  BINARY_TRAIN: False
+  BINARY_EVAL: False
+
+  # Label eval based on same min_needed as train
+  LABEL_EVAL_LIKE_TRAIN: False
+
+  # Don't penalize if model predicts "person",
+  # only penalize if predicts man and is really woman or vice versa
+  NO_PENALTY_PERSON_PRED_EVAL: False
+
+EXP:
+  APPROACH: "coco_gender"
+  NUM_TRIALS: 1
+
+  MODEL: "resnet50"
+  PRETRAINED: True
+
+  LOSSES:
+    # LOG setting is used to compute & log loss, but without including it
+    # in the actual training loss backward pass. It is also not added to the
+    # "total_loss" metrics.
+    # Throws error if both LOG and COMPUTE are True.
+
+    CLASSIFICATION:
+      WEIGHT: 1
+    GRADIENT_OUTSIDE:
+      COMPUTE: True
+      LOG: False
+      WEIGHT: 10000
+      CRITERION: "L1"
+      GT: "clip_rn50"
+      COMBINE_ATT_MODE: "average_nonzero"
+
+  NUM_EPOCHS: 200
+  OPTIMIZER: "SGD"
+  WEIGHT_DECAY: 1e-5
+  MOMENTUM: 0.9
+
+  SCHEDULER: "NONE"
+
+  BASE:
+    LR: 0.01
+
+  CLASSIFIER:
+    LR: 0.001
+

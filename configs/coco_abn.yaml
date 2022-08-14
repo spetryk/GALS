@@ -1,0 +1,79 @@
+
+
+DATA:
+  DATASET: "coco_gender"
+  NUM_CLASSES: 3
+
+  BATCH_SIZE: 96
+
+  # Minimum number of captions with man/woman/person words to qualify as that class
+  MIN_NEEDED: 3
+
+  USE_CLASS_WEIGHTS: False
+
+  ONLY_UPWEIGHT_WOMAN: False # If using class weights, weight for woman
+                             # class is num_man/num_woman.
+                             # Other classes have weight 1.
+
+  # Binary: Only use man & woman classes (no person).
+  # Set separately for train & eval (eval is both val & test)
+  BINARY_TRAIN: False
+  BINARY_EVAL: False
+
+  # Label eval based on same min_needed as train
+  LABEL_EVAL_LIKE_TRAIN: False
+
+  # Don't penalize if model predicts "person",
+  # only penalize if predicts man and is really woman or vice versa
+  NO_PENALTY_PERSON_PRED_EVAL: False
+
+EXP:
+  APPROACH: "coco_abn"
+  NUM_TRIALS: 1
+
+  MODEL: "resnet50_abn"
+  PRETRAINED: True
+
+  # Can "cheat" by providing attention maps to be used
+  # in model, instead of learning.
+  # Options: "NONE", "segmentation"
+  # Also need to provide shape (HxW) of intermediate attention in model.
+  # Throws error if PROVIDED_ATT is not None and
+  # ((LOSSES.ABN_SUPERVISION.{COMPUTE or LOG} or
+  # LOSSES.ABN_CLASSIFICATION.{COMPUTE or LOG}),
+  PROVIDED_ATT: "NONE"
+  PROVIDED_ATT_SHAPE: [14,14]
+
+  LOSSES:
+    # LOG setting is used to compute & log loss, but without including it
+    # in the actual training loss backward pass. It is also not added to the
+    # "total_loss" metrics.
+    # Throws error if both LOG and COMPUTE are True.
+
+    CLASSIFICATION:
+      WEIGHT: 1
+    ABN_CLASSIFICATION:
+      COMPUTE: True
+      LOG: False
+      WEIGHT: 1
+    ABN_SUPERVISION:
+      COMPUTE: False
+      LOG: False
+      WEIGHT: 1
+      CRITERION: "L1"
+      GT: "segmentation"
+      MODE: "suppress_outside" # match, suppress_outside
+
+  NUM_EPOCHS: 200
+  OPTIMIZER: "SGD"
+  WEIGHT_DECAY: 1e-5
+  MOMENTUM: 0.9
+
+  SCHEDULER: "NONE"
+
+  BASE:
+    LR: 0.01
+
+  CLASSIFIER:
+    LR: 0.001
+

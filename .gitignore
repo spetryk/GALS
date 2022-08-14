@@ -1,0 +1,8 @@
+*.pyc
+__pycache__/
+.ipynb_checkpoints
+
+data/
+wandb/
+
+CLIP/clip/bpe_simple_vocab_16e6.txt.gz

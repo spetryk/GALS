@@ -1,0 +1,68 @@
+
+
+DATA:
+  DATASET: "waterbirds"
+  NUM_CLASSES: 2
+
+  BATCH_SIZE: 96
+
+  CONFOUNDING_FACTOR: 1.0
+  WATERBIRDS_DIR: "waterbird_1.0_forest2water2"
+
+EXP:
+  APPROACH: "abn"
+
+  MODEL: "resnet50_abn"
+  PRETRAINED: True
+
+  # Provide attention maps to be used directly
+  # in model, instead of learning.
+  # Options: "NONE", "segmentation", "attention"
+  # "attention" is based on cfg.DATA.ATTENTION_DIR
+  # Also need to provide shape (HxW) of intermediate attention in model.
+  # Throws error if PROVIDED_ATT is not None and
+  # (LOSSES.ABN_SUPERVISION.{COMPUTE or LOG} or
+  # LOSSES.ABN_CLASSIFICATION.{COMPUTE or LOG}),
+  PROVIDED_ATT: "NONE"
+  PROVIDED_ATT_SHAPE: [14,14]
+
+  # Can either multiply attention maps with feature maps
+  # and pass that result on to the rest of the network,
+  # or take that result and add it back to the original feature maps.
+  # The former setting has ABN_ADD_AFTER_ATTENTION as False,
+  # the latter has ABN_ADD_AFTER_ATTENTION as True.
+  ABN_ADD_AFTER_ATTENTION: True
+
+  LOSSES:
+    # LOG setting is used to compute & log loss, but without including it
+    # in the actual training loss backward pass. It is also not added to the
+    # "total_loss" metrics.
+    # Throws error if both LOG and COMPUTE are True.
+
+    CLASSIFICATION:
+      WEIGHT: 1
+    ABN_CLASSIFICATION:
+      COMPUTE: True
+      LOG: False
+      WEIGHT: 1
+    ABN_SUPERVISION:
+      COMPUTE: False
+      LOG: False
+      WEIGHT: 1
+      CRITERION: "L1"
+      GT: "segmentation"
+      MODE: "suppress_outside" # match, suppress_outside
+
+  NUM_EPOCHS: 200
+  OPTIMIZER: "SGD"
+  WEIGHT_DECAY: 1e-5
+  MOMENTUM: 0.9
+
+  SCHEDULER: "NONE"
+
+  BASE:
+    LR: 0.01
+
+  CLASSIFIER:
+    LR: 0.001
+
